@@ -12,7 +12,7 @@
       </button>
     </div>
 
-    <div class="flex items-center justify-center flex-grow px-4">
+    <div class="flex items-center justify-center flex-grow p-4">
       <div class="max-w-2xl w-full bg-white rounded-xl p-10 shadow-md">
         <table-component />
       </div>
