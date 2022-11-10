@@ -25,13 +25,16 @@
             />
           </td>
           <td>{{ user.id }}</td>
-          <td class="cursor-pointer">{{ user.firstName }}</td>
+          <td class="cursor-pointer" @click="setCurrentUser(user)">
+            {{ user.firstName }}
+          </td>
           <td>{{ user.birthDate }}</td>
           <td>{{ user.status }}</td>
         </tr>
       </tbody>
     </table>
 
+    <!-- Change users status block -->
     <div
       class="my-4 flex items-center justify-between"
       v-if="userCheck.length > 0"
@@ -53,6 +56,84 @@
         Поменять статус выбранных элементов
       </button>
     </div>
+
+    <!-- Modal for edit user name -->
+    <div
+      class="
+        fixed
+        top-0
+        left-0
+        bottom-0
+        right-0
+        bg-black bg-opacity-50
+        z-10
+        flex
+        items-center
+        justify-center
+        backdrop-filter backdrop-blur-sm
+      "
+      v-if="isShow"
+    >
+      <div class="max-w-md relative w-full p-10 bg-white shadow-lg rounded-lg">
+        <div
+          class="
+            absolute
+            top-2
+            right-2
+            w-8
+            h-8
+            rounded-full
+            bg-indigo-400
+            flex
+            items-center
+            justify-center
+            cursor-pointer
+            text-white
+          "
+          @click="hideModal"
+        >
+          X
+        </div>
+
+        <div class="mb-5">
+          <label class="block mb-2">
+            Enter new user name for
+            <span class="text-indigo-400 font-medium">
+              {{ currentUser ? currentUser.firstName : "" }}
+            </span>
+          </label>
+          <input
+            type="text"
+            class="
+              border border-indigo-400
+              w-full
+              p-2
+              rounded-lg
+              outline-none
+              text-indigo-400
+              placeholder-indigo-200
+              font-medium
+            "
+            v-model="newUserName"
+          />
+        </div>
+
+        <div class="flex justify-end gap-4">
+          <button
+            @click="hideModal"
+            class="text-indigo-400 p-2 rounded-lg font-medium"
+          >
+            Cancel
+          </button>
+          <button
+            @click="setNewUserName"
+            class="bg-indigo-400 text-white p-2 rounded-lg font-medium"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -68,6 +149,11 @@ export default {
 
       userCheck: [],
       userStatus: "active",
+
+      currentUser: null,
+      newUserName: "",
+
+      isShow: false,
     };
   },
 
@@ -117,6 +203,34 @@ export default {
       });
 
       this.userCheck = [];
+    },
+
+    setCurrentUser(user) {
+      this.currentUser = user;
+      this.showModal();
+    },
+
+    setNewUserName() {
+      if (this.newUserName) {
+        this.users.forEach((user) => {
+          if (user.id === this.currentUser.id) {
+            user.firstName = this.newUserName;
+          }
+        });
+        this.newUserName = "";
+        this.currentUser = null;
+        this.hideModal();
+      } else {
+        alert("Enter something...");
+      }
+    },
+
+    showModal() {
+      this.isShow = true;
+    },
+
+    hideModal() {
+      this.isShow = false;
     },
   },
 };
